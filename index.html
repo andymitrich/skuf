@@ -1,1 +1,42 @@
-<h1>Hello world</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Скуф-песочница</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+  <script src="transpilator.js"></script>
+</head>
+<body>
+  <div id="editor" style="width: 600px; height: 400px; border: 1px solid grey"></div>
+  <button onclick="runCode()">Запустить</button>
+  <script>
+    // Инициализация редактора Monaco
+    require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+
+    require(['vs/editor/editor.main'], function() {
+        window.editor = monaco.editor.create(document.getElementById('editor'), {
+            value: 
+`функция тест() {
+    если четко (1 == 1) {
+        печать("Работает!");
+    }
+}
+    
+тест()`,
+            language: 'javascript', 
+        });
+    });
+
+    // Транспиляция и выполнение
+    function runCode() {
+        const skCode = window.editor.getValue();
+        const jsCode = new Transpilator().transpile(skCode)
+        console.log(jsCode)
+        try {
+            eval(jsCode); 
+        } catch (e) {
+            console.error('Ошибка:', e);
+        }
+    }
+  </script>
+</body>
+</html>
